@@ -41,6 +41,11 @@
  *              3. Added shape option (-sh), to create non-rectangular windows.
  *                 Currently supporting circlular and triangular windows
  */
+ 
+ /* 
+  * Modified by: TLed <tled@ledderboge.de>
+  * 
+  */
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -65,9 +70,8 @@
 #define OPAQUE 0xffffffff
 
 #define NAME "xwinwrap"
-#define VERSION "0.3"
+#define VERSION "0.3.1"
 
-#define DESKTOP_WINDOW_NAME_MAX_SIZE 25
 #define DEFAULT_DESKTOP_WINDOW_NAME "Desktop"
 
 #define DEBUG_MSG(x) if(debug) { fprintf(stderr, x); }
@@ -83,12 +87,10 @@ static pid_t pid = 0;
 
 static char **childArgv = 0;
 static int  nChildArgv  = 0;
-char desktop_window_name[DESKTOP_WINDOW_NAME_MAX_SIZE];
+const char desktop_window_name[] = DEFAULT_DESKTOP_WINDOW_NAME;
 int debug = 0;
 
-    static int
-addArguments (char **argv,
-        int  n)
+static int addArguments (char **argv, int  n)
 {
     char **newArgv;
     int  i;
@@ -106,10 +108,7 @@ addArguments (char **argv,
     return n;
 }
 
-    static void
-setWindowOpacity (Display      *dpy,
-        Window       win,
-        unsigned int opacity)
+static void setWindowOpacity (Display *dpy, Window win, unsigned int opacity)
 {
     CARD32 o;
 
@@ -120,8 +119,7 @@ setWindowOpacity (Display      *dpy,
             (unsigned char *) &o, 1);
 }
 
-    static Visual *
-findArgbVisual (Display *dpy, int scr)
+static Visual *findArgbVisual (Display *dpy, int scr)
 {
     XVisualInfo		*xvi;
     XVisualInfo		template;
@@ -159,22 +157,19 @@ findArgbVisual (Display *dpy, int scr)
     return visual;
 }
 
-    static void
-sigHandler (int sig)
+static void sigHandler (int sig)
 {
     kill (pid, sig);
 }
 
-    static void
-usage (void)
+static void usage (void)
 {
-    fprintf(stderr, "%s v%s- Modified by Shantanu Goel. Visit http://tech.shantanugoel.com for updates, queries and feature requests\n", NAME, VERSION);
+    fprintf(stderr, "%s v%s- Modified version\n", NAME, VERSION);
     fprintf (stderr, "\nUsage: %s [-g {w}x{h}+{x}+{y}] [-ni] [-argb] [-fs] [-s] [-st] [-sp] [-a] "
             "[-b] [-nf] [-o OPACITY] [-sh SHAPE] [-ov]-- COMMAND ARG1...\n", NAME);
     fprintf (stderr, "Options:\n \
             -g      - Specify Geometry (w=width, h=height, x=x-coord, y=y-coord. ex: -g 640x480+100+100)\n \
             -ni     - Ignore Input\n \
-            -d      - Desktop Window Hack. Provide name of the \"Desktop\" window as parameter \
             -argb   - RGB\n \
             -fs     - Full Screen\n \
             -s      - Sticky\n \
@@ -228,8 +223,7 @@ static Window find_desktop_window(Display *display, int screen, Window *root, Wi
     return 0;
 }
 
-    int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
     Display	    *dpy;
     Window	    win;
@@ -269,7 +263,6 @@ main (int argc, char **argv)
 
     screen = DefaultScreen (dpy);
     root   = RootWindow (dpy, screen);
-    strcpy(desktop_window_name, DEFAULT_DESKTOP_WINDOW_NAME);
 
     for (i = 1; i < argc; i++)
     {
@@ -281,11 +274,6 @@ main (int argc, char **argv)
         else if (strcmp (argv[i], "-ni") == 0)
         {
             noInput = 1;
-        }
-        else if (strcmp (argv[i], "-d") == 0)
-        {
-            ++i;
-            strcpy(desktop_window_name, argv[i]);
         }
         else if (strcmp (argv[i], "-argb") == 0)
         {

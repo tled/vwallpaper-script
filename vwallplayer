@@ -1,0 +1,25 @@
+#!/bin/sh
+
+MPLAYER=mplayer2
+
+if [ "${1}" ] ; then
+	if [ -e "${1}" ] ; then
+		#getting display resolution
+		resolution=`xrandr | grep \* | cut -d' ' -f4`
+		xwinwrap -ov -g "${resolution}" -- \
+						$MPLAYER -fs -wid WID \
+						-panscan 1 \
+						"${1}"
+	else
+		echo "file not exists"
+	fi
+else
+	cat << EOF
+vwallplayer plays videos like a wallpaper.
+vwallplayer uses xwinwrap and mplayer/mplayer2.
+
+vwallplayer <video>
+
+EOF
+fi
+

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mplayer2 -fs -loop 0 -panscan 1 -ao null $@

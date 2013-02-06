@@ -4,9 +4,7 @@ MPLAYER=mplayer2
 
 if [ "${1}" ] ; then
 	if [ -e "${1}" ] ; then
-		#getting display resolution
-		resolution=`xrandr | grep \* | cut -d' ' -f4`
-		xwinwrap -ov -g "${resolution}" -- \
+		xwinwrap -ov -fs -- \
 						$MPLAYER -fs -wid WID \
 						-panscan 1 \
 						"${1}"

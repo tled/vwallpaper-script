@@ -9,8 +9,6 @@ xpid=`ps -eo pid,args |grep -e "xwinwrap.*mplayer" | grep -v grep | cut -c1-6`
 
 function vwall {
 	if [ -e "${1}" ] ; then
-		#getting display resolution
-		resolution=`xrandr | grep \* | cut -d' ' -f4`
 		mkfifo "${FIFO}"
 		cat <<EOF
 Starting vwallpaper
@@ -21,7 +19,7 @@ echo "quit" >> ${FIFO}
 
 or press Ctrl + C ;)
 EOF
-		xwinwrap -ov -g "${resolution}" -- \
+		xwinwrap -ov -fs -- \
 						$MPLAYER -loop 0 -fs -wid WID \
 						-slave -input file="${FIFO}" \
 						-ao null -panscan 1 \

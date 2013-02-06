@@ -4,7 +4,7 @@ MPLAYER=mplayer2
 
 if [ "${1}" ] ; then
 	if [ -e "${1}" ] ; then
-		xwinwrap -ov -fs -- \
+		xwinwrap -ov -fs -sp -st -nf -- \
 						$MPLAYER -fs -wid WID \
 						-panscan 1 \
 						"${1}"

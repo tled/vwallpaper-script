@@ -19,7 +19,7 @@ echo "quit" >> ${FIFO}
 
 or press Ctrl + C ;)
 EOF
-		xwinwrap -ov -fs -- \
+		xwinwrap -ov -fs -sp -st -nf -- \
 						$MPLAYER -loop 0 -fs -wid WID \
 						-slave -input file="${FIFO}" \
 						-ao null -panscan 1 \
